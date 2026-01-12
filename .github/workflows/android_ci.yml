@@ -1,4 +1,4 @@
-name: Android CI - APK Build (Fastlane)
+name: Android CI - Build APK
 
 on:
   push:
@@ -11,30 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Java 17 (matches your local OpenJDK 17)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: zulu
+          java-version: 17
 
-      # Ruby 2.6 (matches ruby 2.6.10)
       - name: Set up Ruby 2.6
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.6'
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: Install Fastlane
+        run: gem install fastlane
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK using Fastlane
+      - name: Build Debug APK
         run: fastlane build_apk
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk
